@@ -10,7 +10,7 @@ import * as THREE from 'three';
 import type { EffectComposer as Composer } from 'postprocessing';
 import type { Asset, Layer, Scene, EvaluatedCamera } from '../types';
 import { useStudio, activeScene } from '../store/useStudio';
-import { seek, evaluateLayer } from '../timeline/engine';
+import { seek, evaluateLayerForCamera } from '../timeline/engine';
 import { evaluateCamera } from '../camera/camera';
 import { mulberry32, particleSeeds, particleAt } from '../environment3d/particles';
 import { MangaEffect } from '../shaders/MangaEffect';
@@ -23,14 +23,14 @@ const Card=memo(function Card({layer,assets,wireframe=false}:{layer:Layer;assets
  useEffect(()=>{texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;texture.needsUpdate=true;},[texture]);
  const geometry=useMemo(()=>{if(layer.mask!=='diagonal')return new THREE.PlaneGeometry(1,1);const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute([-.5,-.5,0,.5,-.5,0,.35,.5,0,-.5,.35,0],3));g.setAttribute('uv',new THREE.Float32BufferAttribute([0,0,1,0,.85,1,0,.85],2));g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();return g;},[layer.mask]);
  useEffect(()=>()=>geometry.dispose(),[geometry]);
- useFrame(()=>{if(!ref.current)return;const s=useStudio.getState();const sc=activeScene(s.project);const l=evaluateLayer(layer,s.time);ref.current.visible=l.visible;ref.current.position.set(...l.position);ref.current.scale.set(l.scale[0],l.scale[1],1);if(layer.billboard)ref.current.quaternion.copy(camera.quaternion);else ref.current.rotation.set(...l.rotation);const mesh=ref.current.children[0] as THREE.Mesh;if(mesh){const m=mesh.material as THREE.MeshBasicMaterial;m.opacity=l.opacity;}});
+ useFrame(()=>{if(!ref.current)return;const s=useStudio.getState();const sc=activeScene(s.project);const cam=evaluateCamera(sc,s.time);const l=evaluateLayerForCamera(layer,s.time,cam);ref.current.visible=l.visible;ref.current.position.set(...l.position);ref.current.scale.set(l.scale[0],l.scale[1],1);if(layer.billboard)ref.current.quaternion.copy(camera.quaternion);else ref.current.rotation.set(...l.rotation);const mesh=ref.current.children[0] as THREE.Mesh;if(mesh){const m=mesh.material as THREE.MeshBasicMaterial;m.opacity=l.opacity;}});
  const blending=layer.blend==='multiply'?THREE.MultiplyBlending:layer.blend==='screen'?THREE.CustomBlending:layer.blend==='add'?THREE.AdditiveBlending:THREE.NormalBlending;
  const screenProps=layer.blend==='screen'?{blendSrc:THREE.OneFactor,blendDst:THREE.OneMinusSrcColorFactor,blendEquation:THREE.AddEquation}:{};
  return <group ref={ref} position={layer.position} scale={[layer.scale[0],layer.scale[1],1]}>
   <mesh geometry={geometry} renderOrder={layer.position[2]+50}>
-   <meshBasicMaterial map={texture} transparent opacity={layer.opacity} alphaTest={.015} depthWrite={false} side={THREE.DoubleSide} blending={blending} {...screenProps} color={layer.color} toneMapped={false}/>
+   <meshBasicMaterial map={texture} transparent opacity={layer.opacity} alphaTest={.015} side={THREE.DoubleSide} blending={blending} {...screenProps} color={layer.color} toneMapped={false}/>
   </mesh>
-  {layer.shadow&&<mesh geometry={geometry} position={[.025,-.025,-.025]}><meshBasicMaterial map={texture} color="#020b12" transparent opacity={.3} alphaTest={.015} depthWrite={false}/></mesh>}
+  {layer.shadow&&<mesh geometry={geometry} position={[.025,-.025,-.025]}><meshBasicMaterial map={texture} color="#020b12" transparent opacity={.3} alphaTest={.015}/></mesh>}
   {layer.rim&&<mesh geometry={geometry} position={[0,0,-.015]} scale={[1.018,1.018,1]}><meshBasicMaterial map={texture} color="#d5f5e5" transparent opacity={.22} depthWrite={false} blending={THREE.AdditiveBlending}/></mesh>}
   {wireframe&&<lineSegments><edgesGeometry args={[new THREE.PlaneGeometry(1,1)]}/><lineBasicMaterial color={layer.id===useStudio.getState().selection?.id?'#f5a17b':'#78b9b1'} transparent opacity={.75}/></lineSegments>}
  </group>;
@@ -43,8 +43,8 @@ function Particles({scene}:{scene:Scene}){
  const ref=useRef<THREE.InstancedMesh>(null);const env=scene.environment;
  const seeds=useMemo(()=>particleSeeds(env),[env.seed,env.count,env.width,env.height,env.depth,env.centerZ]);
  const dummy=useMemo(()=>new THREE.Object3D(),[]);
- useFrame(()=>{if(!ref.current)return;const s=useStudio.getState();const e=activeScene(s.project).environment;ref.current.visible=e.enabled;for(let i=0;i<seeds.length;i++){const p=particleAt(seeds,e,i,s.time);dummy.position.set(...p);dummy.rotation.set(0,0,e.kind==='rain'?-.12:Math.sin(s.time+seeds[i].phase)*.5);const size=seeds[i].size;dummy.scale.set(e.kind==='rain'?.012:.035*size,e.kind==='rain'?.19+size*.1:.035*size,1);dummy.updateMatrix();ref.current.setMatrixAt(i,dummy.matrix);}});
- return <instancedMesh ref={ref} args={[undefined,undefined,seeds.length]} frustumCulled={false} renderOrder={80}><planeGeometry args={[1,1]}/><meshBasicMaterial color={env.color} transparent opacity={env.opacity} depthWrite={false} depthTest side={THREE.DoubleSide} blending={env.kind==='dust'?THREE.AdditiveBlending:THREE.NormalBlending}/></instancedMesh>;
+ useFrame(()=>{if(!ref.current)return;const s=useStudio.getState();const e=activeScene(s.project).environment;ref.current.visible=e.enabled;ref.current.count=Math.min(seeds.length,ref.current.instanceMatrix.count);for(let i=0;i<ref.current.count;i++){const p=particleAt(seeds,e,i,s.time);dummy.position.set(...p);dummy.rotation.set(0,0,e.kind==='rain'?-.12:Math.sin(s.time+seeds[i].phase)*.5);const size=seeds[i].size;dummy.scale.set(e.kind==='rain'?.012:.035*size,e.kind==='rain'?.19+size*.1:.035*size,1);dummy.updateMatrix();ref.current.setMatrixAt(i,dummy.matrix);}ref.current.instanceMatrix.needsUpdate=true;});
+ return <instancedMesh key={seeds.length} ref={ref} args={[undefined,undefined,seeds.length]} frustumCulled={false} renderOrder={80}><planeGeometry args={[1,1]}/><meshBasicMaterial color={env.color} transparent opacity={env.opacity} depthWrite={false} depthTest side={THREE.DoubleSide} blending={env.kind==='dust'?THREE.AdditiveBlending:THREE.NormalBlending}/></instancedMesh>;
 }
 function applyCamera(cam:THREE.PerspectiveCamera|THREE.OrthographicCamera,state:EvaluatedCamera,aspect:number){
  cam.position.set(...state.position);cam.up.set(0,1,0);cam.lookAt(new THREE.Vector3(...state.target));cam.rotateZ(state.roll);
