@@ -49,15 +49,18 @@ export function evaluateLayer(layer: Layer, time: number, cameraZ = 6): Evaluate
     scale: [value('scale.x',layer.scale[0])*compensation,value('scale.y',layer.scale[1])*compensation],
     opacity: clamp(value('opacity',layer.opacity),0,1) };
 }
+/** Single source of truth: layer as the camera sees it. Used by BOTH seek() and renderer Cards. */
+export function evaluateLayerForCamera(layer: Layer, time: number, camera: EvaluatedCamera): EvaluatedLayer {
+  const ev = evaluateLayer(layer, time, camera.position[2]);
+  if (layer.compensate && camera.type === 'orthographic')
+    ev.scale = [sampleTrack(layer.tracks['scale.x'], time, layer.scale[0]), sampleTrack(layer.tracks['scale.y'], time, layer.scale[1])];
+  return ev;
+}
 /** Pure scene snapshot. All animation, camera noise and particle seeds derive from t. */
 export function seek(scene: Scene, time: number): SceneState {
   const t = clamp(Number.isFinite(time) ? time : 0, 0, scene.duration);
   const camera = evaluateCamera(scene, t);
-  const layers = scene.layers.map(l => {
-    const ev = evaluateLayer(l,t,camera.position[2]);
-    if (l.compensate && camera.type === 'orthographic') ev.scale = [sampleTrack(l.tracks['scale.x'],t,l.scale[0]),sampleTrack(l.tracks['scale.y'],t,l.scale[1])];
-    return ev;
-  });
+  const layers = scene.layers.map(l => evaluateLayerForCamera(l, t, camera));
   const shader = {...scene.shader};
   if (scene.shader.tracks) for (const p of ['dotSize','angle','threshold','ink','vignette','blur','focus','flash'] as const) {
     const tr=scene.shader.tracks[p]; if(tr) (shader as any)[p]=sampleTrack(tr,t,scene.shader[p]);
