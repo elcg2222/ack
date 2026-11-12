@@ -1,0 +1,55 @@
+CHANGED FIELD: diagnostic copy MangaEffect.tsx state reader: hook alias -> useStudio.getState (one line). No source archive or MONIZA runtime edits. Coordination note added separately; snapshot/diff retained.
+MODIFIED_FILE=D:\pipeline\work\qwen-mangamotion-audit-20261112\source\src\core\shaders\MangaEffect.tsx
+DIFF_FILE=D:\pipeline\work\qwen-mangamotion-audit-20261112\DIFF_FILE.diff
+VERIFICATION=D:\pipeline\work\qwen-mangamotion-audit-20261112\VERIFICATION.txt
+ROLLBACK=D:\pipeline\work\qwen-mangamotion-audit-20261112\ROLLBACK.sh
+ORIGINAL SHA256=f4506f3ed4b6375bd15d8be9c931c53adfababf54c1743f55aa7a179e7d02cca
+MODIFIED SHA256=5803be9b6009f14c0f5e5e78476de9fe592a1e5ea6440078a17f39e5324091bc
+ARCHIVE SHA256=26cd17d948a2daff7f28e1f73516c0a42267813964e1833dea734a1adb1ff748
+
+BASELINE
+CWD: D:/pipeline/work/qwen-mangamotion-audit-20261112/source
+COMMAND: npm.cmd test
+OUTPUT: Test Files  1 passed (1); Tests  13 passed (13)
+EXIT STATUS: 0
+COMMAND: npm.cmd run build
+RESULT: TypeScript + Vite build passed, 2011 modules transformed
+EXIT STATUS: 0
+CWD: D:/pipeline
+COMMAND: node work/qwen-mangamotion-audit-20261112/browser-check.mjs
+INPUT: unmodified build at http://127.0.0.1:5187; fresh Edge profile; external requests blocked
+LITERAL ERROR (262 occurrences): Minified React error #321; visit https://reactjs.org/docs/error-decoder.html?invariant=321 for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+RESULT: canvasCount=1; blank viewport visually confirmed in baseline-ui.png
+EXIT STATUS: 0 (collector success; app runtime failed)
+RAW OUTPUT RECORD: BROWSER_BASELINE.json
+
+MODIFIED
+COMMAND: npm.cmd test
+CWD: D:/pipeline/work/qwen-mangamotion-audit-20261112/source
+OUTPUT: Test Files  1 passed (1); Tests  13 passed (13)
+EXIT STATUS: 0
+COMMAND: npm.cmd run build
+RESULT: TypeScript + Vite build passed, 2011 modules transformed
+EXIT STATUS: 0
+CWD: D:/pipeline
+COMMAND: node work/qwen-mangamotion-audit-20261112/browser-check.mjs modified
+INPUT: one-line patched build at http://127.0.0.1:5187
+LITERAL OUTPUT:
+{
+  "label": "modified",
+  "errorCount": 0,
+  "uniqueErrors": [],
+  "consoleErrors": [],
+  "canvasCount": 1
+}
+EXIT STATUS: 0
+RESULT: forest and character visible, modified-ui.png inspected
+
+ROLLBACK
+COMMAND: sh D:/pipeline/work/qwen-mangamotion-audit-20261112/ROLLBACK.sh D:/pipeline/work/qwen-mangamotion-audit-20261112/rollback_fixture
+INPUT: isolated shader copy
+LITERAL OUTPUT: ROLLBACK PASS: original_shader_hash_restored; diagnostic_copy_retained
+EXIT STATUS: 0
+RESTORED STATUS: original shader bytes/hash restored in isolated copy; browser not re-run on rollback. Diagnostic source copy remains patched. ROLLBACK.sh restores shader only, not coordination note or generated build files.
+
+Smoke tests only; no full video export/AI/scene integration/CodeLab execution test. Compiler also generated tsconfig.tsbuildinfo/dist in isolated source. Linux core dump preserved only in original archive. Temporary server and browser stopped after checks.

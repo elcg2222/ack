@@ -1,0 +1,1 @@
+export const modeMeta={id:'blockout3d',phase:2,name:'3D Blockout',status:'preview'} as const;

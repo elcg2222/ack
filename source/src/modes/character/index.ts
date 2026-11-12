@@ -1,0 +1,1 @@
+export const modeMeta={id:'character',phase:2,name:'Character',status:'preview'} as const;

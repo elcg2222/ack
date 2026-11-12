@@ -1,0 +1,9 @@
+--- MangaEffect.before.tsx
++++ source/src/core/shaders/MangaEffect.tsx
+@@ -49,5 +49,5 @@
+  useFrame(()=>{effect.uniforms.get('uResolution')!.value.set(gl.domElement.width,gl.domElement.height);const s=get().project.scenes.find(x=>x.id===get().project.activeSceneId)!;const t=get().time;const fx=seek(s,t).shader;const env=s.environment;const u=effect.uniforms;u.get('uDotSize')!.value=Math.max(1,fx.dotSize);u.get('uAngle')!.value=fx.angle;u.get('uThreshold')!.value=fx.threshold;u.get('uInk')!.value=fx.ink;u.get('uBW')!.value=fx.bw?1:0;u.get('uHalftone')!.value=fx.halftone?1:0;u.get('uVignette')!.value=fx.vignette;u.get('uBlur')!.value=fx.blur;u.get('uFocus')!.value=fx.focus;u.get('uFlash')!.value=fx.flash+(s.id==='forest-night'||s.id==='panel-break'?Math.exp(-Math.pow((t-2.5)*17,2))*.72:0);u.get('uSpeedlines')!.value=env.speedlines;u.get('uRadius')!.value=env.speedlineRadius;});
+  return <primitive object={effect} dispose={null}/>;
+ }
+-import { useStudio as get } from '../store/useStudio';
++const get = useStudio.getState;
+ import { seek } from '../timeline/engine';

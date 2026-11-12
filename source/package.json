@@ -1,0 +1,44 @@
+{
+  "name": "mangamotion-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "postinstall": "node scripts/copy-monaco.mjs",
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && node --max-old-space-size=2048 ./node_modules/vite/bin/vite.js build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.2.5",
+    "@fontsource/barlow-condensed": "^5.2.5",
+    "@monaco-editor/react": "^4.7.0",
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.18.0",
+    "@react-three/postprocessing": "^2.19.1",
+    "jszip": "^3.10.1",
+    "lucide-react": "^0.468.0",
+    "monaco-editor": "^0.52.2",
+    "postprocessing": "^6.36.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.170.0",
+    "zundo": "^2.3.0",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.51.0",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@types/three": "^0.170.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "~5.7.2",
+    "vite": "^6.1.0",
+    "vitest": "^3.0.7"
+  }
+}

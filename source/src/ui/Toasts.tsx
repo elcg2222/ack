@@ -1,0 +1,3 @@
+import { CheckCircle2, XCircle, Info, X } from 'lucide-react';
+import { useStudio } from '../core/store/useStudio';
+export function Toasts(){const toasts=useStudio(s=>s.toasts);const dismiss=useStudio(s=>s.dismiss);return <div className="toasts" aria-live="polite">{toasts.map(t=>{const Icon=t.type==='success'?CheckCircle2:t.type==='error'?XCircle:Info;return <div key={t.id} className={`toast ${t.type}`}><Icon size={16}/><span>{t.message}</span><button onClick={()=>dismiss(t.id)}><X size={13}/></button></div>;})}</div>;}

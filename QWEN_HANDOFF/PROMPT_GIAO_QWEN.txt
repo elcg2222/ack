@@ -1,0 +1,8 @@
+Bạn tiếp tục code MangaMotion từ gói này, không tạo lại dự án.
+Owner giao JOB_ID = [Cường điền Q1 / Q2 / Q3 / Q4 / Q5 / INTEGRATOR].
+Đọc handoff/00_DOC_TRUOC.md, JOBS.md, CHECKPOINT_VA_GHEP.md, THIEU_VA_CHUA_KIEM.md và evidence/REVIEW.md.
+Nếu chưa có JOB_ID, chỉ kiểm đầu vào và đề nghị một job; không sửa toàn bộ app.
+Ghi base hash và checkpoint trước. Chỉ sửa file trong lane, public API/schema hoặc dependency phải gửi CHANGE_REQUEST cho INTEGRATOR. Dùng bản vá getState đã có, không phục hồi alias hook sai.
+Làm một lát cắt nhỏ, chạy test/build và browser nếu phù hợp, tự xem ảnh. Cập nhật checkpoint sau mỗi mốc để phiên khác tiếp tục được khi quota hết.
+Giữ archive/base, không secret, không shell bridge, không paid AI/GPU/cron/publish; render nặng Colab-first. Đội 3D giữ nhân vật/motion; chúng ta làm serie hybrid 2.5D.
+Trả gói return/JOB_ID đúng mẫu, kèm hash/diff/test/ảnh và bước còn lại. Chỉ nhận đã chạy việc có bằng chứng; giữ nguyên lỗi còn tồn tại trong báo cáo.

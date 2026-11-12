@@ -1,0 +1,9 @@
+--- coord.before
++++ KE_HOACH_PHOI_HOP_DEV.md
+@@ -1,3 +1,6 @@
++## 12/11/2026 — QWEN-MANGAMOTION kiểm prototype
++Owner gửi workspace (1).tar.gz để đánh giá. Gốc 13 test/build pass nhưng browser React #321/viewport trống; bản sao vá getState shader đã hiện cảnh, smoke test 0 lỗi. Chưa nhập MONIZA hoặc nghiệm thu đầy đủ; nhân vật/motion vẫn đội 3D. Báo cáo work/qwen-mangamotion-audit-20261112/REVIEW.md, ảnh/bằng chứng/rollback cạnh đó.
++
+ ## 12/11/2026 — HYBRID-25D / Owner tách hai serie
+ Nhánh Cường + Codex làm hybrid 2.5D, Claude giữ serie 3D và nhân vật/motion. Đánh giá MangaMotion + kế hoạch: operations/3d_direction/KE_HOACH_HYBRID_25D_20261112.md. Kiểm 21 ZIP/hash/CRC; L10 và R01 chỉ có scaffold, chưa nghiệm thu hình/Drive. Chỉ tài liệu, chưa dựng app/gọi AI/render/sửa kho. Hồ sơ work/mangamotion-review-20261112/.
+ 

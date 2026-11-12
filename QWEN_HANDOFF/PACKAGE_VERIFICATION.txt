@@ -1,0 +1,6 @@
+ZIP=D:\pipeline\work\qwen-mangamotion-audit-20261112\QWEN_CONTINUE_25D_20261112.zip
+SHA256=6b582054ddca979d93659e5b1240fb9eda0234e72625fa2e419ed09fecc7ca93
+PAYLOADS=161
+RESULT=CRC_PASS; ALL_PAYLOAD_SHA256_MATCH; forbidden_paths_absent
+Secret scan=limited pattern scan, not a universal guarantee.
+App tests/build not rerun: source unchanged by packaging; prior evidence included.

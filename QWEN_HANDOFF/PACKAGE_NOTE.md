@@ -1,0 +1,1 @@
+Gói có source đã vá chẩn đoán, không có runtime đang chạy. Đường D:/... trong evidence là bằng chứng máy gốc; dùng app/ và evidence/ trong ZIP. Không chạy rollback cũ trên máy khác. Source snapshot này không tự cập nhật khi job trả về.
