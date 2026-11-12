@@ -4,6 +4,7 @@ import { Effect } from 'postprocessing';
 import { Uniform, Vector2 } from 'three';
 import type { ShaderSettings } from '../types';
 import { useStudio } from '../store/useStudio';
+import { seek } from '../timeline/engine';
 const fragment=`
 uniform float uDotSize;
 uniform float uAngle;
